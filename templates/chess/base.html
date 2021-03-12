@@ -3,13 +3,22 @@
 <html>
 <head>
     <title>Chess Tournament App</title>
-    <script src="{% static 'js/jquery-3.6.0.min.js' }"></script>
 </head>
 <body>
     <header>
-
+        <div>
+            <a href="{% url 'chess:index' %}">Home</a>
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+            Logged in as <strong>{{ user.username }}</strong>. | <a href="{% url 'auth_logout' %}?next={% url 'chess:index' %}">Logout</a> | <a href="{% url 'auth_password_change' %}">Change password</a>
+            {% else %}
+            <a href="{% url 'auth_login' %}">Login</a> | <a href="{% url 'registration_register' %}">Register</a>
+            {% endif %}
+        </div>
     </header>
     {% block body_block %}
     {% endblock %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 </body>
 </html>
