@@ -1,0 +1,81 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+	<link href="{% static 'plugins/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <section class="content-header margin-bottom">
+        <ol class="breadcrumb">
+            <li><a href="">chess</a></li>
+            <li><a href="#">calendar</a></li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+		<div class="box box-primary">
+            <div class="box-body no-padding">
+                <!-- THE CALENDAR -->
+                <div id="calendar">
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </section>
+
+    <!-- /.content -->
+
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+    <script type="text/javascript">
+    $(function () {
+            //initializationFullCalendar
+            $('#calendar').fullCalendar({
+				buttonText: {
+                    today: 'today',
+                    month: 'month',
+                    week: 'week',
+                    day: 'day',
+                },
+                allDayText: "allDay",
+                timeFormat: 'HH:mm',
+                views: {
+                    month: {titleFormat: 'YYYYMMMM'},
+                    week: {titleFormat: 'YYYYMMMM'},
+                    day: {titleFormat: 'YYYYMMMMD'},
+                },
+                monthNames: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+                monthNamesShort: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+                dayNames: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+                dayNamesShort: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+                //defaultView: 'agendaWeek',
+                contentHeight: 650,
+				customButtons: {
+                   reportAddButton: {
+                       text: '添加',
+                       click: function(){
+                           alert('这是一个自定义按钮');
+                       }
+                   },
+
+                },
+                header: {
+                    
+                    left: 'prev,next today reportAddButton',
+                    
+                    center: 'title',
+                    
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                
+                weekends: true,
+				
+            });
+        });
+
+    </script>
+{% endblock %}
