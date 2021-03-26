@@ -1,0 +1,24 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+<style>
+    #chess-board {
+        margin: auto 30%;
+        width: 40%;
+        height: auto;
+    }
+</style>
+<div>
+    <img id="chess-board" src="{% static 'images/chessboard.png' %}"/>
+</div>
+<div>
+    <label for="move-dropdown">Choose a move: </label>
+    <select name="move-dropdown" id="move-dropdown">
+    </select>
+    <button type="submit" id="submit-move">Submit</button>
+</div>
+<h3>Moves:</h3>
+<ol id="move-list">
+</ol>
+{% endblock %}
