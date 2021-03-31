@@ -2,9 +2,17 @@
 {% load staticfiles %}
 <html>
 <head>
-    <title>Chess Tournament App</title>
+    <title>
+		{% block title_block %}
+			Chess Tournament App	
+		{% endblock %}
+	</title>
 </head>
 <body>
+	<style>	
+        .topbar {border:1px solid #999999; margin:20px; font-weight:bold;}
+        .calendar {position:absolute; left: 400px;}		
+    </style>
     <header>
         <div>
             <a href="{% url 'chess:index' %}">Home</a>
@@ -16,6 +24,10 @@
             <a href="{% url 'auth_login' %}">Login</a> | <a href="{% url 'registration_register' %}">Register</a>
             {% endif %}
         </div>
+		<div class="topbar">
+			<a href="{% url 'chess:history' %}", class="history">Tournament History</a>
+			<a href="{% url 'chess:calendar' %}", class="calendar">Calendar</a>
+		</div>
     </header>
     {% block body_block %}
     {% endblock %}

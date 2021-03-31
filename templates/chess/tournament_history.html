@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Tournament History
+{% endblock %}
+
+{% block body_block %}
+	<div>
+	{% if tournaments %}
+		<ul>
+		{% for tournament in tournaments %}
+			<li><a href="{% url 'chess:show_tournament' tournament.name %}">{{ tournament.name }}</a></li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<strong>There are no tournaments present.</strong>
+	{% endif %}
+	</div>
+{% endblock %}

@@ -5,7 +5,7 @@
 	<link href="{% static 'plugins/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet"/>
 {% endblock %}
 
-{% block content %}
+{% block body_block %}
     <section class="content-header margin-bottom">
         <ol class="breadcrumb">
             <li><a href="">chess</a></li>
@@ -56,9 +56,9 @@
                 contentHeight: 650,
 				customButtons: {
                    reportAddButton: {
-                       text: '添加',
+                       text: 'Add',
                        click: function(){
-                           alert('这是一个自定义按钮');
+                           alert('This is a custom button');
                        }
                    },
 

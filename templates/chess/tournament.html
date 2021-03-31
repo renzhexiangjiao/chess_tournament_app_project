@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	{% if category %}
+		{{ tournament.name }}
+	{% else %}
+		Unknown Tournament
+	{% endif %}
+{% endblock %}
+
+{% block body_block %}
+	{% if tournament %}
+	<h1>{{ tournament.name }}</h1>
+	{% if games %}
+	<ul>
+		{% for game in games %}
+		<li>{{ game.player_white }} vs {{ game.player_black}} | time: {{ game.time }}</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<strong>No games currently in tournament.</strong>
+	{% endif %}
+
+	{% else %}
+	The specified tournament does not exist.
+	{% endif %}
+{% endblock %}
