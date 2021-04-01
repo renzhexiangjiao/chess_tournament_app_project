@@ -36,9 +36,9 @@ def populate():
          'player_white':'Harry',
          'player_black':'Jerry'}]
     
-    tournaments = {'Tournament1': {'date': '30/3/2021', 'games': tournament1_games},
-            'Tournament2': {'date': '05/10/2020', 'games': tournament2_games},
-            'Tournament3': {'date': '20/05/2020', 'games': []}}
+    tournaments = {'Tournament1': {'date': '08/3/2021', 'games': tournament1_games},
+            'Tournament2': {'date': '20/3/2021', 'games': tournament2_games},
+            'Tournament3': {'date': '10/04/2021', 'games': []}}
             
     
     for tournament, tournament_data in tournaments.items():
