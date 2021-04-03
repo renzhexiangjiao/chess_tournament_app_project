@@ -6,19 +6,48 @@
     #chess-board {
         margin: auto 30%;
         width: 40%;
-        height: auto;
+        display: grid;
+        grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+        background: url("{% static 'images/chessboard.png' %}");
+        background-size: contain;
+    }
+    #chess-board > div {
+        position: relative;
+    }
+    #chess-board > div::before {
+        content: "";    
+        padding-bottom: 100%;
+        display: block;
+    }
+    #chess-board > div > img {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0; 
+        width: 100%;
+        height: 100%;
     }
 </style>
 <div>
-    <img id="chess-board" src="{% static 'images/chessboard.png' %}"/>
+    <div id="chess-board">
+        <div style="grid-area: 1 / 1 / 2 / 2;"></div>
+        <div style="grid-area: 2 / 2 / 3 / 3;"></div>
+        <div style="grid-area: 3 / 3 / 4 / 4;"></div>
+        <div style="grid-area: 4 / 4 / 5 / 5;"></div>
+        <div style="grid-area: 5 / 5 / 6 / 6;"></div>
+        <div style="grid-area: 6 / 6 / 7 / 7;"></div>
+        <div style="grid-area: 7 / 7 / 8 / 8;"></div>
+        <div style="grid-area: 8 / 8 / 9 / 9;"></div>
+        <div style="grid-area: 9 / 9 / 10 / 10;"></div>
+        <div style="grid-area: 10 / 10 / 11 / 11;"></div>
+    </div>
 </div>
 <div>
     <label for="move-dropdown">Choose a move: </label>
-    <select name="move-dropdown" id="move-dropdown">
-    </select>
+    <select name="move-dropdown" id="move-dropdown"></select>
     <button type="submit" id="submit-move">Submit</button>
 </div>
 <h3>Moves:</h3>
-<ol id="move-list">
-</ol>
+<ol id="move-list"></ol>
 {% endblock %}

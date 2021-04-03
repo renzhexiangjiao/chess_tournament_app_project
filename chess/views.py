@@ -1,5 +1,5 @@
 from django.shortcuts import render
-import json
+from django.http import HttpResponse
 from django.views import View
 
 class IndexView(View):
@@ -18,4 +18,4 @@ class MoveListView(View):
 
 class MoveUpdateView(View):
     def get(self, request):
-        pass
+        return HttpResponse('Hello')
