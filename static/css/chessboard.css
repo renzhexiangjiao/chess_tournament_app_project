@@ -1,0 +1,25 @@
+#chess-board {
+    margin: auto 30%;
+    width: 40%;
+    display: grid;
+    grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+    background: url("/static/images/chessboard.png");
+    background-size: contain;
+}
+#chess-board > div {
+    position: relative;
+}
+#chess-board > div::before {
+    content: "";    
+    padding-bottom: 100%;
+    display: block;
+}
+#chess-board > div > img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; 
+    width: 100%;
+    height: 100%;
+}

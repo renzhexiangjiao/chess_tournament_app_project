@@ -8,7 +8,8 @@ class IndexView(View):
 
 class PlayView(View):
     def get(self, request):
-        return render(request, 'chess/play.html')
+        context_dict = {'perspective': 0}
+        return render(request, 'chess/play.html', context_dict)
 
 class MoveListView(View):
     def get(self, request):
