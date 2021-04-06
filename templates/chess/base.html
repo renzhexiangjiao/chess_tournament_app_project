@@ -6,8 +6,11 @@
 	{% endblock %}
 	<style>	
 			.topbar {border:1px solid #999999; margin:20px; font-weight:bold;}
-			.calendar {position:absolute; left: 400px;}		
+			.calendar {position:absolute; left: 400px;}	
+			.accountpage {position:absolute; left: 800px;}
     </style>
+	
+	
 	
     <title>
 		{% block title_block %}
@@ -30,6 +33,9 @@
 		<div class="topbar">
 			<a href="{% url 'chess:history' %}", class="history">Tournament History</a>
 			<a href="{% url 'chess:calendar' %}", class="calendar">Calendar</a>
+			{% if user.is_authenticated %}
+				<a href="{% url 'chess:accountpage' %}" class="accountpage">My account</a>
+			{% endif %}
 		</div>
     </header>
     {% block body_block %}

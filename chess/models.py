@@ -33,7 +33,7 @@ class AccountPage(models.Model):
     
     status = models.CharField(max_length=100)
     picture = models.ImageField(upload_to='profile_images', blank=True)
-    winRate = models.DecimalField(max_digits=3, decimal_places=1)
+    winRate = models.DecimalField(max_digits=3, decimal_places=1, default=0)
     wonGame = models.IntegerField(default=0)
     lostGame = models.IntegerField(default=0)
     

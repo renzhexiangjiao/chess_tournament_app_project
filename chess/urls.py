@@ -9,4 +9,6 @@ urlpatterns = [
     path('tournament/<tournament_name>/', 
          views.show_tournament, name='show_tournament'),
     path('calendar/', views.show_calendar, name='calendar'),
+    path('accountpage/', views.show_accountpage, name='accountpage'),
+    path('accountpage/create/', views.create_accountpage, name='create_accountpage'),
 ]
