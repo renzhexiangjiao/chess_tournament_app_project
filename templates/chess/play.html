@@ -7,5 +7,9 @@
     {% get_board_initial_state perspective board_state %}
 </div>
 <h3>Moves:</h3>
-<ol id="move-list"></ol>
+<ol id="move-list">
+    {% for move in moves %}
+    <li>{{ move }}</li>
+    {% endfor %}
+</ol>
 {% endblock %}
