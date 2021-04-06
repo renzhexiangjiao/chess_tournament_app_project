@@ -29,7 +29,7 @@ def show_tournament(request, tournament_name):
         
         context_dict['games'] = games
         context_dict['tournament'] = tournament
-    except Category.DoesNotExist:
+    except Tournament.DoesNotExist:
         context_dict['games'] = None
         context_dict['tournament'] = None
     
