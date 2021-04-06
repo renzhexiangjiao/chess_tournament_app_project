@@ -6,9 +6,9 @@ from .. import gamerules
 register = template.Library()
 
 @register.inclusion_tag('chess/chessboard.html')
-def get_board_initial_state(perspective):
+def get_board_initial_state(perspective, board_state):
     s = ''
-    for index, square in enumerate(gamerules.starting_board_state['board']):
+    for index, square in enumerate(board_state['board']):
         column = chr(ord('a') + index%8)
         row = 1 + index//8
 

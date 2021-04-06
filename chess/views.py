@@ -9,14 +9,15 @@ class IndexView(View):
 
 class PlayView(View):
     def get(self, request):
-        context_dict = {'perspective': 0}
+        context_dict = {'perspective': 0, 'board_state': gamerules.starting_board_state}
         return render(request, 'chess/play.html', context_dict)
 
 class MoveListView(View):
     def get(self, request):
         print(request.GET['move'])
         context_dict = { 'options' : gamerules.legal_moves(gamerules.starting_board_state) }
-        return render(request, 'chess/movelist.html', context_dict)
+        #return render(request, 'chess/movelist.html', context_dict)
+        return HttpResponse(' '.join(gamerules.legal_moves(gamerules.starting_board_state)))
 
 class MoveUpdateView(View):
     def get(self, request):

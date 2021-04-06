@@ -4,12 +4,7 @@
 
 {% block body_block %}
 <div>
-    {% get_board_initial_state perspective %}
-</div>
-<div>
-    <label for="move-dropdown">Choose a move: </label>
-    <select name="move-dropdown" id="move-dropdown"></select>
-    <button type="submit" id="submit-move">Submit</button>
+    {% get_board_initial_state perspective board_state %}
 </div>
 <h3>Moves:</h3>
 <ol id="move-list"></ol>
