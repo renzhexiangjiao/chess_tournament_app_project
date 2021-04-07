@@ -1,0 +1,24 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Createing account page
+{% endblock %}
+
+{% block body_block %}
+<h1>{{ user.get_username }}</h1>
+
+<strong>Createing your account page here!</strong>
+<br />
+
+<form id="accountpage_form" method="post" action="{% url 'chess:accountpage'%}"
+	  enctype="multipart/form-data">
+	  
+	  {% csrf_token %}
+	  <!-- as_p method wraps each element in the form in a paragraph (denoted by the <p> HTML tag).
+	  This ensures that each element appears on a new line-->
+      {{ accountpage_form.as_p }}
+	  <input type="submit" name="submit" value="Save" />
+</form>
+
+{% endblock %}

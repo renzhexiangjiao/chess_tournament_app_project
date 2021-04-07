@@ -1,7 +1,26 @@
 {% extends 'chess/base.html' %}
 {% load staticfiles %}
 
+{% block css %}
+	<link href="{% static 'css/list.css' %}", rel="stylesheet"/>
+{% endblock %}
+
+{% block title_block %}
+	Homepage	
+{% endblock %}
+
 {% block body_block %}
 <h1 style="font-size: 50px;">Homepage</h1>
+<div>
+	<details>
+		<summary>Recommaend Tournaments</summary>
+		<ul>
+			<li><a href="{% url 'chess:show_tournament' 'Tournament1' %}">Tournament1</a></li>
+			<br />
+			<li><a href="{% url 'chess:show_tournament' 'Tournament2' %}">Tournament2</a></li>
+		</ul>
+	</details>
+<div>
 <img src="{% static 'images/chess.jpg' %}" width="500" height="500"/>
 {% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Account Page
+{% endblock %}
+
+{% block body_block %}
+<h1>{{ user.get_username }}</h1>
+
+<strong>Welcome to your account page!</strong>
+<br />
+<a href="{% url 'chess:create_accountpage' %}">Create account page</a>
+
+<div>
+	<p>Status: {{accountpage.status}}</p>
+	<p>Picture: {{accountpage.picture}}</p>
+</div>
+{% endblock %}
