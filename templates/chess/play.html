@@ -1,0 +1,15 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+{% load chess_template_tags %}
+
+{% block body_block %}
+<div id="chess-board-container">
+    {% get_board perspective board_state %}
+</div>
+<h3>Moves:</h3>
+<ol id="move-list">
+    {% for move in moves %}
+    <li>{{ move }}</li>
+    {% endfor %}
+</ol>
+{% endblock %}

@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.views import View
+from . import gamerules
 from chess.models import Tournament, Game, AccountPage
 from chess.forms import AccountPageForm
 from django.contrib.auth.decorators import login_required
@@ -7,6 +9,23 @@ from django.contrib.auth.decorators import login_required
 class IndexView(View):
     def get(self, request):
         return render(request, 'chess/index.html')
+class PlayView(View):
+    def get(self, request, game_id):
+        context_dict = {'perspective': 0, 'board_state': gamerules.starting_board_state, 'moves': []}
+        return render(request, 'chess/play.html', context_dict)
+
+class PlayLobbyView(View):
+    def get(self, request):
+        return render(request, 'chess/playlobby.html')
+
+class MoveListView(View):
+    def get(self, request, game_id):
+        print(request.GET['move'])
+        return HttpResponse(' '.join(gamerules.legal_moves(gamerules.starting_board_state)))
+
+class MoveUpdateView(View):
+    def get(self, request, game_id):
+        return HttpResponse('e2e4')
         
 def show_tournament_history(request):
     context_dict = {}
