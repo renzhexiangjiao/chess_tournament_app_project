@@ -4,7 +4,6 @@
 <head>
     <title>Chess Tournament App</title>
 	  {% block css %}
-        <link rel="stylesheet" href="{% static 'css/chessboard.css' %}">
 	  {% endblock %}
 	  <style>	
 			.topbar {border:1px solid #999999; margin:20px; font-weight:bold;}
@@ -43,8 +42,7 @@
     {% block body_block %}
     {% endblock %}
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-	  {% block javascript %}
-        <script src="{% static 'js/play.js' %}"></script>
-	  {% endblock %}
+	{% block javascript %}
+	{% endblock %}
 </body>
 </html>

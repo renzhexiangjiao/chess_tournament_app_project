@@ -2,6 +2,10 @@
 {% load staticfiles %}
 {% load chess_template_tags %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/chessboard.css' %}">
+{% endblock %}
+
 {% block body_block %}
 <div id="chess-board-container">
     {% get_board perspective board_state %}
@@ -12,4 +16,8 @@
     <li>{{ move }}</li>
     {% endfor %}
 </ol>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/play.js' %}"></script>
 {% endblock %}

@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 class IndexView(View):
     def get(self, request):
         return render(request, 'chess/index.html')
+        
 class PlayView(View):
     def get(self, request, game_id):
         context_dict = {'perspective': 0, 'board_state': gamerules.starting_board_state, 'moves': []}
