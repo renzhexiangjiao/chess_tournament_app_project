@@ -122,6 +122,12 @@ def legal_moves(board_state):
             if valid(row-1, col-1) and board_state['board'][index(row-1, col-1)] != 0 and (board_state['board'][index(row-1, col-1)] - piece[1]) % 2 == 1:
                 legal_moves.append((piece[0], index(row-1, col-1)))
 
+    # castling 
+    #TODO
+
+    # en passant
+    #TODO
+
     legal_moves_str = []
 
     # move by white can't create a check for white, move for black can't create a check for black
@@ -211,12 +217,100 @@ def make_move(board_state, sq_from, sq_to):
         
 
 def check_white(board_state):
+    pos_king = board_state['board'].index(PieceTypes.WHITE_KING.value)
+
+    valid = lambda r, c: c>=0 and c<=7 and r>=0 and r<=7
+    index = lambda r, c: 8*r+c
+
+    row = pos_king // 8
+    col = pos_king % 8
+
+    # pawns
+    if valid(row+1, col+1) and board_state['board'][index(row+1, col+1)] == PieceTypes.BLACK_PAWN.value:
+        return True
+    if valid(row+1, col-1) and board_state['board'][index(row+1, col-1)] == PieceTypes.BLACK_PAWN.value:
+        return True
+
+    # king
+    for i in range(-1,2):
+        for j in range(-1,2):
+            if valid(row+i, col+j) and board_state['board'][index(row+i, row+j)] == PieceTypes.BLACK_KING.value:
+                return True
+
+    # knights
+    for i in [-2, -1, 1, 2]:
+        for j in [-1, 1]:
+            if valid(row+i, col+j*(3-abs(i))) and board_state['board'][index(row+i, col+j*(3-abs(i)))] == PieceTypes.BLACK_KNIGHT.value:
+                return True
+
+    # cardinal directions
+    for i in range(2):
+        for j in range(-1,2):
+            k = 1
+            while valid(row+j*k*i, col+j*k*(1-i)) and board_state['board'][index(row+j*k*i, col+j*k*(1-i))] == 0:
+                k+=1
+            if valid(row+j*k*i, col+j*k*(1-i)) and (board_state['board'][index(row+j*k*i, col+j*k*(1-i))] == PieceTypes.BLACK_ROOK.value or board_state['board'][index(row+j*k*i, col+j*k*(1-i))] == PieceTypes.BLACK_QUEEN.value):
+                return True       
+
+    # ordinal directions
+    for i in [-1, 1]:
+        for j in [-1, 1]:
+            k = 1
+            while valid(row+i*k, col+j*k) and board_state['board'][index(row+i*k, col+j*k)] == 0:
+                k+=1
+            if valid(row+i*k, col+j*k) and (board_state['board'][index(row+i*k, col+j*k)] == PieceTypes.BLACK_BISHOP.value or board_state['board'][index(row+i*k, col+j*k)] == PieceTypes.BLACK_QUEEN.value):
+                return True
+
     return False
 
 def mate_white(board_state):
     return check_white(board_state) and len(legal_moves(board_state))==0
 
 def check_black(board_state):
+    pos_king = board_state['board'].index(PieceTypes.BLACK_KING.value)
+
+    valid = lambda r, c: c>=0 and c<=7 and r>=0 and r<=7
+    index = lambda r, c: 8*r+c
+
+    row = pos_king // 8
+    col = pos_king % 8
+
+    # pawns
+    if valid(row-1, col+1) and board_state['board'][index(row-1, col+1)] == PieceTypes.WHITE_PAWN.value:
+        return True
+    if valid(row-1, col-1) and board_state['board'][index(row-1, col-1)] == PieceTypes.WHITE_PAWN.value:
+        return True
+
+    # king
+    for i in range(-1,2):
+        for j in range(-1,2):
+            if valid(row+i, col+j) and board_state['board'][index(row+i, row+j)] == PieceTypes.WHITE_KING.value:
+                return True
+
+    # knights
+    for i in [-2, -1, 1, 2]:
+        for j in [-1, 1]:
+            if valid(row+i, col+j*(3-abs(i))) and board_state['board'][index(row+i, col+j*(3-abs(i)))] == PieceTypes.WHITE_KNIGHT.value:
+                return True
+
+    # cardinal directions
+    for i in range(2):
+        for j in range(-1,2):
+            k = 1
+            while valid(row+j*k*i, col+j*k*(1-i)) and board_state['board'][index(row+j*k*i, col+j*k*(1-i))] == 0:
+                k+=1
+            if valid(row+j*k*i, col+j*k*(1-i)) and (board_state['board'][index(row+j*k*i, col+j*k*(1-i))] == PieceTypes.WHITE_ROOK.value or board_state['board'][index(row+j*k*i, col+j*k*(1-i))] == PieceTypes.WHITE_QUEEN.value):
+                return True       
+
+    # ordinal directions
+    for i in [-1, 1]:
+        for j in [-1, 1]:
+            k = 1
+            while valid(row+i*k, col+j*k) and board_state['board'][index(row+i*k, col+j*k)] == 0:
+                k+=1
+            if valid(row+i*k, col+j*k) and (board_state['board'][index(row+i*k, col+j*k)] == PieceTypes.WHITE_BISHOP.value or board_state['board'][index(row+i*k, col+j*k)] == PieceTypes.WHITE_QUEEN.value):
+                return True
+
     return False
 
 def mate_black(board_state):

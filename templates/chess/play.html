@@ -3,8 +3,8 @@
 {% load chess_template_tags %}
 
 {% block body_block %}
-<div>
-    {% get_board_initial_state perspective board_state %}
+<div id="chess-board-container">
+    {% get_board perspective board_state %}
 </div>
 <h3>Moves:</h3>
 <ol id="move-list">
