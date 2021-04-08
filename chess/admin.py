@@ -10,7 +10,7 @@ class GameAdmin(admin.ModelAdmin):
     list_display = ('time', 'player_white', 'player_black', 'tournament')
 
 class MoveAdmin(admin.ModelAdmin):
-    list_display = ('moveId', 'square_from', 'square_to')
+    list_display = ('game', 'move_id', 'square_from', 'square_to', 'captured_piece')
 
 # Register your models here.
 

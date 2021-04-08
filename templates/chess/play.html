@@ -19,5 +19,9 @@
 {% endblock %}
 
 {% block javascript %}
+    {% if spectate_mode %}
+    <script src="{% static 'js/spectate.js' %}"></script>
+    {% else %}
     <script src="{% static 'js/play.js' %}"></script>
+    {% endif %}    
 {% endblock %}
