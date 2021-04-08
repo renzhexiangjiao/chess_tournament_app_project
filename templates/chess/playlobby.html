@@ -3,6 +3,8 @@
 
 {% block body_block %}
 <ul>
-    <li>Nothing to see here yet</li>
+    {% for game in games %}
+    <li><a href="{% url 'chess:play' game.id %}">{{ game.time }} - {{ game.player_white.username }} vs {{ game.player_black.username }}</a></li>
+    {% endfor %}
 </ul>
 {% endblock %}

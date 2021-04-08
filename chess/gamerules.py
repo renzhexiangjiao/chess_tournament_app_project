@@ -36,6 +36,9 @@ starting_board_state = {
     'en_passant': None
 }
 
+def get_piece_at(board_state, square):
+    return board_state['board'][8*(int(square[1])-1) + ord(square[0]) - ord('a')]
+
 def legal_moves(board_state):
     legal_pieces = []
     legal_moves = []
@@ -68,7 +71,7 @@ def legal_moves(board_state):
                     while valid(row+i*k, col+j*k) and board_state['board'][index(row+i*k, col+j*k)] == 0:
                         legal_moves.append((piece[0], index(row+i*k, col+j*k)))
                         k+=1
-                    if valid(row+i*k, col+i*k) and (board_state['board'][index(row+i*k, col+j*k)] - piece[1]) % 2 == 1:
+                    if valid(row+i*k, col+j*k) and (board_state['board'][index(row+i*k, col+j*k)] - piece[1]) % 2 == 1:
                         legal_moves.append((piece[0], index(row+i*k, col+j*k)))
 
         # rook
@@ -90,7 +93,7 @@ def legal_moves(board_state):
                     while valid(row+i*k, col+j*k) and board_state['board'][index(row+i*k, col+j*k)] == 0:
                         legal_moves.append((piece[0], index(row+i*k, col+j*k)))
                         k+=1
-                    if valid(row+i*k, col+i*k) and (board_state['board'][index(row+i*k, col+j*k)] - piece[1]) % 2 == 1:
+                    if valid(row+i*k, col+j*k) and (board_state['board'][index(row+i*k, col+j*k)] - piece[1]) % 2 == 1:
                         legal_moves.append((piece[0], index(row+i*k, col+j*k)))
 
         # knight
@@ -154,8 +157,8 @@ def legal_moves(board_state):
 
 
 def make_move(board_state, sq_from, sq_to):
-    index_from = 8*(int(sq_from[1])) + ord(sq_from[0]) - ord('a')
-    index_to = 8*(int(sq_to[1])) + ord(sq_to[0]) - ord('a')
+    index_from = 8*(int(sq_from[1])-1) + ord(sq_from[0]) - ord('a')
+    index_to = 8*(int(sq_to[1])-1) + ord(sq_to[0]) - ord('a')
     
     piece_moved = board_state['board'][index_from]
     piece_captured = board_state['board'][index_to]
@@ -215,7 +218,6 @@ def make_move(board_state, sq_from, sq_to):
     if piece_moved == PieceTypes.BLACK_PAWN.value and sq_to[1] == '1':
         board_state['board'][index_to] = PieceTypes.BLACK_QUEEN.value
         
-
 def check_white(board_state):
     pos_king = board_state['board'].index(PieceTypes.WHITE_KING.value)
 
@@ -234,7 +236,7 @@ def check_white(board_state):
     # king
     for i in range(-1,2):
         for j in range(-1,2):
-            if valid(row+i, col+j) and board_state['board'][index(row+i, row+j)] == PieceTypes.BLACK_KING.value:
+            if valid(row+i, col+j) and board_state['board'][index(row+i, col+j)] == PieceTypes.BLACK_KING.value:
                 return True
 
     # knights
@@ -284,7 +286,7 @@ def check_black(board_state):
     # king
     for i in range(-1,2):
         for j in range(-1,2):
-            if valid(row+i, col+j) and board_state['board'][index(row+i, row+j)] == PieceTypes.WHITE_KING.value:
+            if valid(row+i, col+j) and board_state['board'][index(row+i, col+j)] == PieceTypes.WHITE_KING.value:
                 return True
 
     # knights
