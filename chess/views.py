@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views import View
 from . import gamerules
 from chess.models import Tournament, Game, Move, AccountPage
-from chess.forms import AccountPageForm
+from chess.forms import AccountPageForm, TournamentForm
 from django.contrib.auth.decorators import login_required
 from copy import deepcopy
 
@@ -144,7 +144,7 @@ def create_accountpage(request):
         accountpage_form = AccountPageForm()
     
     if filled == True:
-        return render(request, 'chess/accountpage.html', context=context_dict)
+        return redirect(reverse('chess:accountpage'))
     else:
         return render(request,
                       'chess/create_accountpage.html',
@@ -160,3 +160,16 @@ def show_accountpage(request):
         context_dict['accountpage'] = None
     
     return render(request, 'chess/accountpage.html', context=context_dict)
+
+@login_required
+def add_tournament(request):
+    tournament_form = TournamentForm()
+    
+    if request.method == 'POST':
+        tournament_form = TournamentForm(request.POST)
+        if tournament_form.is_valid():
+            tournament_form.save(commit=True)
+            return redirect(reverse('chess:history'))
+        else:
+            print(form.errors)
+    return render(request, 'chess/add_tournament.html', {'tournament_form': tournament_form})

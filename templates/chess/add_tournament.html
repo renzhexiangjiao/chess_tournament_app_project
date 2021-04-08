@@ -1,0 +1,22 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Adding a tournament
+{% endblock %}
+
+{% block body_block %}
+
+<strong>Adding a tournament here!</strong>
+<br />
+<div>
+	<form id="tournament_form" method="post" action="{% url 'chess:add_tournament'%}"
+	  enctype="multipart/form-data">
+	  
+	  {% csrf_token %}
+	  
+      {{ tournament_form.as_p }}
+	  <input type="submit" name="submit" value="Submit" />
+	</form>
+</div>
+{% endblock %}

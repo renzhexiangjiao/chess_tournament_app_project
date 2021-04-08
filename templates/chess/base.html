@@ -10,6 +10,7 @@
 		.topbar {border:1px solid #999999; margin:20px; font-weight:bold;}
 		.calendar {position:absolute; left: 400px;}	
 		.accountpage {position:absolute; left: 800px;}
+		.play {position:absolute; left: 1200px;}
     </style>
 	
     <title>
@@ -31,11 +32,11 @@
             {% endif %}
         </div>
 		<div class="topbar">
-			<a href="{% url 'chess:playlobby' %}">Play</a>
 			<a href="{% url 'chess:history' %}" class="history">Tournament History</a>
 			<a href="{% url 'chess:calendar' %}" class="calendar">Calendar</a>
 			{% if user.is_authenticated %}
 				<a href="{% url 'chess:accountpage' %}" class="accountpage">My account</a>
+				<a href="{% url 'chess:playlobby' %}" class="play">Play</a>
 			{% endif %}
 		</div>
     </header>
