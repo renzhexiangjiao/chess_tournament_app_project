@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chess',
     'registration',
+    'background_task',
 ]
 
 MIDDLEWARE = [
