@@ -14,6 +14,9 @@
 
 <div>
 	<p>Status: {{accountpage.status}}</p>
-	<p>Picture: {{accountpage.picture}}</p>
+	<p>Picture: </p>
+	{% if accountpage.picture %}
+		<img src="{{ MEDIA_URL }}{{accountpage.picture}} " alt="Your image."/>
+	{% endif %}
 </div>
 {% endblock %}

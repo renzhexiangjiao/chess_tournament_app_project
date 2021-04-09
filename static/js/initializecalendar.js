@@ -28,7 +28,7 @@ $(document).ready(function() {
 		{
           title: 'Tournament2',
           start: '2021-3-20',
-		      end: '2021-3-25'
+		  end: '2021-3-25'
         },
 		{
           title: 'Tournament3',

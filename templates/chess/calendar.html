@@ -16,6 +16,7 @@
 
 	<div class="ui menu">
 		<div class="header item">Tournament Calendar</div>
+		
 		<div class="right menu">
 			<div class="item">
 				<div class="ui action left icon input">
@@ -24,7 +25,9 @@
 					<button class="ui button">Submit</button>
 				</div>
 			</div>
-			<a class="item">Link</a>
+			{% if user.is_superuser %}
+				<a href="{% url 'chess:add_tournament' %}", class="item">Add a tournament</a>
+			{% endif %}
 		</div>
 	</div>
 </div>
