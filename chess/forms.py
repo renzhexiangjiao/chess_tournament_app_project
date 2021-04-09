@@ -11,7 +11,7 @@ class AccountPageForm(forms.ModelForm):
         
 class TournamentForm(forms.ModelForm):
     name = forms.CharField(max_length=50, help_text="Please enter the tournament name.")
-    date = forms.DateTimeField(initial=timezone.now())
+    date = forms.DateTimeField(label='Pick date and time:', initial=timezone.now(), widget=forms.SplitDateTimeWidget(date_attrs={'type': 'date'}, time_attrs={'type':'time'}))
     class Meta:
         model = Tournament
         fields = ('name', 'date',)
