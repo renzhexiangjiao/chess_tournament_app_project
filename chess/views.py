@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from django.views import View
-from . import gamerules
+from chess import gamerules
 from chess.models import Tournament, Game, Move, AccountPage
 from chess.forms import AccountPageForm, TournamentForm
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from copy import deepcopy
 
 class IndexView(View):
@@ -63,7 +64,6 @@ class MoveListView(View):
                 move.game = game
                 move.square_from = move_str[:2]
                 move.square_to = move_str[2:]
-                move.captured_piece = gamerules.get_piece_at(board_state, move_str[2:])
                 move.save()
                 # update the board 
                 gamerules.make_move(board_state, move.square_from, move.square_to)

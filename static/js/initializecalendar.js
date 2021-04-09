@@ -1,5 +1,10 @@
 $(document).ready(function() {
     
+//
+//    TODO
+//    make an AJAX call to get a JsonResponse from the server containing all the data about the tournaments pulled from the *DATABASE*
+//
+
     $('#calendar').fullCalendar({
       header: {
         left: 'prev,next today',
@@ -18,12 +23,12 @@ $(document).ready(function() {
         },
         {
           title: 'Tournament1',
-          start: '2021-3-08T14:00:00'
+          start: '2021-3-08T14:00:00' // remove all static data, populate events in views.py with the tournaments from database
         },
 		{
           title: 'Tournament2',
-          start: '2021-3-20'
-		  end: '2021-3-25'
+          start: '2021-3-20',
+		      end: '2021-3-25'
         },
 		{
           title: 'Tournament3',

@@ -20,7 +20,7 @@ class PieceTypes(Enum):
                    'black/rook.png', 'white/rook.png',
                    'black/bishop.png', 'white/bishop.png',
                    'black/knight.png', 'white/knight.png',
-                   'black/pawn.png', 'white/pawn.png']
+                   'black/pawn.png', 'white/pawn.png'] 
 
 starting_board_state = {
     'board': [6, 10, 8, 4, 2, 8, 10, 6,
@@ -31,13 +31,13 @@ starting_board_state = {
               0, 0, 0, 0, 0, 0, 0, 0,
               11, 11, 11, 11, 11, 11, 11, 11,
               5, 9, 7, 3, 1, 7, 9, 5],
-    'turn': 0,
-    'castling': [1, 1, 1, 1],
-    'en_passant': None
+    'turn': 0,                  # 0 - white moves, 1 - black moves
+    'castling': [1, 1, 1, 1],   # possibility of castling 
+    'en_passant': None          # square on which en passant is possible
 }
 
 def get_piece_at(board_state, square):
-    return board_state['board'][8*(int(square[1])-1) + ord(square[0]) - ord('a')]
+    return board_state['board'][8*(int(square[1])-1) + ord(square[0]) - ord('a')] # converts square in the form '[a-h][1-8]' to an index of the 'board' array
 
 def legal_moves(board_state):
     legal_pieces = []
@@ -48,8 +48,8 @@ def legal_moves(board_state):
         if piece % 2 == board_state['turn'] and piece!=0:
             legal_pieces.append((pos, piece))
 
-    valid = lambda r, c: c>=0 and c<=7 and r>=0 and r<=7
-    index = lambda r, c: 8*r+c
+    valid = lambda r, c: c>=0 and c<=7 and r>=0 and r<=7 # checks if the square is in the boundaries of the chessboard
+    index = lambda r, c: 8*r+c                           # converts a row, column tuple to the corresponding index in the 'board' array
 
     # standard move patterns
     for piece in legal_pieces:
@@ -144,7 +144,7 @@ def legal_moves(board_state):
         # check?
         if board_state['turn']:
             if not check_black(board_state):
-                legal_moves_str.append(chr(ord('a') + move[0]%8) + str(move[0]//8+1) + chr(ord('a') + move[1]%8) + str(move[1]//8+1))
+                legal_moves_str.append(chr(ord('a') + move[0]%8) + str(move[0]//8+1) + chr(ord('a') + move[1]%8) + str(move[1]//8+1)) # move is a pair of indices of the 'board' array. Here they are converted to a human-readable form (0, 63) -> a1h8
         else:
             if not check_white(board_state):
                 legal_moves_str.append(chr(ord('a') + move[0]%8) + str(move[0]//8+1) + chr(ord('a') + move[1]%8) + str(move[1]//8+1))
@@ -155,7 +155,7 @@ def legal_moves(board_state):
     
     return legal_moves_str
 
-
+# update the board given a move
 def make_move(board_state, sq_from, sq_to):
     index_from = 8*(int(sq_from[1])-1) + ord(sq_from[0]) - ord('a')
     index_to = 8*(int(sq_to[1])-1) + ord(sq_to[0]) - ord('a')
@@ -212,12 +212,13 @@ def make_move(board_state, sq_from, sq_to):
     board_state['board'][index_to] = board_state['board'][index_from]
     board_state['board'][index_from] = 0
 
-    # promotion
+    # promotion - only to a queen as of now
     if piece_moved == PieceTypes.WHITE_PAWN.value and sq_to[1] == '8':
         board_state['board'][index_to] = PieceTypes.WHITE_QUEEN.value
     if piece_moved == PieceTypes.BLACK_PAWN.value and sq_to[1] == '1':
         board_state['board'][index_to] = PieceTypes.BLACK_QUEEN.value
         
+# is the white king in danger?        
 def check_white(board_state):
     pos_king = board_state['board'].index(PieceTypes.WHITE_KING.value)
 
@@ -265,9 +266,11 @@ def check_white(board_state):
 
     return False
 
+# winning condition for black
 def mate_white(board_state):
     return check_white(board_state) and len(legal_moves(board_state))==0
 
+# is the black king in danger?
 def check_black(board_state):
     pos_king = board_state['board'].index(PieceTypes.BLACK_KING.value)
 
@@ -315,5 +318,6 @@ def check_black(board_state):
 
     return False
 
+# winning condition for white
 def mate_black(board_state):
     return check_black(board_state) and len(legal_moves(board_state))==0
