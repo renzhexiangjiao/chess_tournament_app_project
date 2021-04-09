@@ -31,8 +31,12 @@ $(function() {
             // ask server for legal moves
             $.get('/chess/movelist/'+game_id+'/', { move: '' },
             function(data) {
-                turn = data.split(' ')[0] == '1';
-                legal_moves = data.split(' ').slice(1);
+                if(data.redirect) {
+                    $(location).attr('href', data.redirect);
+                } else {
+                    turn = data.turn;
+                    legal_moves = data.legal_moves;
+                }
             });
         });
     }
@@ -64,8 +68,12 @@ $(function() {
                         // ask server for a new list of legal moves
                         $.get('/chess/movelist/'+game_id+'/', { move: sq_from + sq_to },
                         function(data) {
-                            turn = data.split(' ')[0] == '1';
-                            legal_moves = data.split(' ').slice(1);
+                            if(data.redirect) {
+                                $(location).attr('href', data.redirect);
+                            } else {
+                                turn = data.turn;
+                                legal_moves = data.legal_moves;
+                            }
                         });
 
                         // remove all green circles

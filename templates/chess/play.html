@@ -8,7 +8,7 @@
 
 {% block body_block %}
 <div id="chess-board-container">
-    {% get_board perspective board_state %}
+    {% get_board perspective board_state player_white_name player_black_name %}
 </div>
 <h3>Moves:</h3>
 <ol id="move-list">

@@ -2,9 +2,32 @@
 {% load staticfiles %}
 
 {% block body_block %}
-<ul>
-    {% for game in games %}
-    <li><a href="{% url 'chess:play' game.id %}">{{ game.time }} - {{ game.player_white.username }} vs {{ game.player_black.username }}</a></li>
-    {% endfor %}
-</ul>
+{% if message %}
+    <h1>{{ message }}</h1>
+{% endif %}
+<h2>Play games:</h2>
+{% if user.is_authenticated %}
+    {% if playable_games %}
+    <ul>
+        {% for game in playable_games %}
+        <li><a href="{% url 'chess:play' game.id %}">{{ game.player_white.username }} vs {{ game.player_black.username }} | time: {{ game.time }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <strong>There are no games you can play currently.</strong>
+    {% endif %}
+{% else %}
+<strong>Log in to play games.</strong>
+{% endif %}
+
+<h2>Spectate games:</h2>
+{% if ongoing_games %}
+    <ul>
+        {% for game in ongoing_games %}
+        <li><a href="{% url 'chess:spectate' game.id %}">{{ game.player_white.username }} vs {{ game.player_black.username }} | time: {{ game.time }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+<strong>There are no ongoing games.</strong>
+{% endif %}
 {% endblock %}

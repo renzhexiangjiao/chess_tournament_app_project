@@ -321,3 +321,8 @@ def check_black(board_state):
 # winning condition for white
 def mate_black(board_state):
     return check_black(board_state) and len(legal_moves(board_state))==0
+
+# draw condition
+def draw(board_state):
+    return (((not check_black(board_state)) and (not check_white(board_state)) and len(legal_moves(board_state))==0) or 
+            sum(board_state['board']) == PieceTypes.WHITE_KING.value + PieceTypes.BLACK_KING.value)

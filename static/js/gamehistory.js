@@ -3,10 +3,10 @@ $(function(){
     var game_id = pathname[pathname.length - 2];
 
     var n_moves = $('#move-list li').length;
-    var current_move_index = n_moves - 1;
+    var current_move_index = n_moves;
     
     function updateBoard() {
-        $.get('/chess/board-history/'+game_id+'/', {'move_index': current_move_index},
+        $.get('/chess/board-history/'+game_id+'/', {'move_index': current_move_index },
         function(data) {
             $('#chess-board-container').html(data);
         });
@@ -23,7 +23,7 @@ $(function(){
         }
     });
     $('#next-move').click(function() {
-        if (current_move_index < n_moves - 1) {
+        if (current_move_index < n_moves) {
             current_move_index++;
             updateBoard();
         }

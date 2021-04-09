@@ -1,4 +1,5 @@
 #chess-board {
+    position: relative;
     margin: auto 30%;
     width: 40%;
     display: grid;
@@ -22,4 +23,12 @@
     right: 0; 
     width: 100%;
     height: 100%;
+}
+
+#chess-board > p {
+    position: absolute;
+    margin-bottom: 0;
+    color:white;
+    font-size: large;
+    font-weight: bold;
 }

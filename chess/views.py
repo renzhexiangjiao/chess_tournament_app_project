@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.views import View
 from chess import gamerules
@@ -18,13 +18,16 @@ class PlayView(View):
     def get(self, request, game_id):
         try:
             game = Game.objects.get(id=game_id)
+
+            # if spectate_mode is on, the user will have no control over the game
             spectate_mode = 'spectate' in request.path.split('/')
 
-            if timezone.now() < game.time:
+            if timezone.now() < game.time: # dissalow users from entering games which are scheduled in the future
                 return redirect(reverse('chess:index'))
-            elif timezone.now() > game.time + timedelta(minutes=20) or game.result is not None:
+            elif game.result is not None: # if the game has been played already, redirect user to its history page
                 return redirect(reverse('chess:gamehistory', kwargs={'game_id':game_id}))
 
+            # perspective decides if the board is shown normal or upside down
             perspective = 0
             if not spectate_mode:
                 if request.user.is_authenticated and request.user == game.player_white:
@@ -35,34 +38,63 @@ class PlayView(View):
                     # user does not participate in this game
                     return redirect(reverse('chess:spectate', kwargs={'game_id':game_id}))
 
+            # execute moves on the board in order
             board_state = deepcopy(gamerules.starting_board_state)
             moves = Move.objects.filter(game=game).order_by('move_id')
             for move in moves:
                 gamerules.make_move(board_state, move.square_from, move.square_to)
 
-            context_dict = {'perspective': perspective, 'board_state': board_state, 'moves': [move.square_from + move.square_to for move in moves], 'spectate_mode': spectate_mode}
+            context_dict = {'perspective': perspective, 
+                            'board_state': board_state, 
+                            'moves': [move.square_from + move.square_to for move in moves], 
+                            'spectate_mode': spectate_mode,
+                            'player_white_name': game.player_white.username,
+                            'player_black_name': game.player_black.username}
+            
             return render(request, 'chess/play.html', context_dict)
         except Game.DoesNotExist:
             return redirect(reverse('chess:index'))
 
 class PlayLobbyView(View):
     def get(self, request):
-        games = Game.objects.all()
-        return render(request, 'chess/playlobby.html', { 'games': games })
+        games = Game.objects.filter(time__lte=timezone.now()).filter(result__isnull=True)
+        if request.user.is_authenticated:
+            ongoing_games = games.exclude(player_black=request.user).exclude(player_white=request.user).order_by('time')
+            games_white = games.filter(player_white=request.user)
+            games_black = games.filter(player_black=request.user)
+            playable_games = (games_white | games_black).order_by('time')
+        else:
+            ongoing_games = games.order_by('time')
+            playable_games = None
+
+        # playable games are the currently held games which the user participates in. ongoing games are all other currently held games.
+        context_dict = {'playable_games': playable_games, 'ongoing_games': ongoing_games }
+
+        # gamestatus is present if the user has just finished their game. It informs them if they won, lost or drawn the game
+        if 'gamestatus' in request.GET:
+            gamestatus = request.GET['gamestatus']
+            if gamestatus == 'draw':
+                context_dict['message'] = "Your game ended in a draw."
+            elif gamestatus == 'win':
+                context_dict['message'] = "Congratulations! You have won the game."
+            elif gamestatus == 'loss':
+                context_dict['message'] = "You have lost the game."
+        
+        return render(request, 'chess/playlobby.html', context_dict)
 
 class MoveListView(View):
     def get(self, request, game_id):
         try:
             game = Game.objects.get(id=game_id)
-            board_state = deepcopy(gamerules.starting_board_state)
 
             # execute moves on the board in order
+            board_state = deepcopy(gamerules.starting_board_state)
             moves = Move.objects.filter(game=game).order_by('move_id')
             for move in moves:
                 gamerules.make_move(board_state, move.square_from, move.square_to)
 
             # board_state['turn'] is 0 when it's white player's turn, 1 otherwise
-            turn = '1' if board_state['turn']==int(request.user==game.player_black) else '0'
+            turn = int(board_state['turn']==int(request.user==game.player_black))
             
             move_str = request.GET['move']
             if move_str and (move_str in gamerules.legal_moves(board_state)): # double checks if the received move is valid
@@ -75,9 +107,31 @@ class MoveListView(View):
                 # update the board 
                 gamerules.make_move(board_state, move.square_from, move.square_to)
                 # now is the turn of the opponent
-                turn = '0'
+                turn = 0
+
+                # check if the current position is winning/losing/tied
+                if gamerules.mate_white(board_state):
+                    game.result = 0.0 # black won (0-1)
+                    game.save()
+                elif gamerules.mate_black(board_state):
+                    game.result = 1.0 # white won (1-0)
+                    game.save()
+                elif gamerules.draw(board_state):
+                    game.result = 0.5 # draw (1/2-1/2)
+                    game.save()
+
+            # if the game is already decided, redirect to playlobby with a message
+            if game.result is not None:
+                if game.result == 0.5:
+                    gamestatus = 'draw'
+                elif ((game.result == 0.0 and request.user == game.player_black) or 
+                        (game.result == 1.0 and request.user == game.player_white)):
+                    gamestatus = 'win'
+                else:
+                    gamestatus = 'loss'
+                return JsonResponse({'redirect':reverse('chess:playlobby')+'?gamestatus='+gamestatus})
             
-            return HttpResponse(' '.join([turn] + gamerules.legal_moves(board_state)))
+            return JsonResponse({'turn':turn, 'legal_moves':gamerules.legal_moves(board_state)})
         except Game.DoesNotExist:
             return HttpResponse('')
 
@@ -101,7 +155,7 @@ class GameHistoryView(View):
 
             if timezone.now() < game.time:
                 return redirect(reverse('chess:index'))
-            elif game.result is None or timezone.now() < game.time + timedelta(minutes=20):
+            elif game.result is None:
                 redirect(reverse('chess:play', kwargs={'game_id':game_id}))
 
             moves = Move.objects.filter(game=game).order_by('move_id')
@@ -114,15 +168,22 @@ class GameHistoryView(View):
 class BoardHistoryView(View):
     def get(self, request, game_id):
         try:
-            n_moves = int(request.GET['move_index'])
             game = Game.objects.get(id=game_id)
             moves = Move.objects.filter(game=game).order_by('move_id')
+
+            if 'move_index' in request.GET:
+                n_moves = int(request.GET['move_index'])
+            else:
+                n_moves = moves.count()
 
             board_state = deepcopy(gamerules.starting_board_state)
             for move in moves[:n_moves]:
                 gamerules.make_move(board_state, move.square_from, move.square_to)
 
-            context_dict = { 'perspective': 0, 'board_state': board_state}
+            context_dict = {'perspective': 0, 
+                            'board_state': board_state,
+                            'player_white_name': game.player_white.username,
+                            'player_black_name': game.player_black.username}
             return HttpResponse(render_to_string('chess/board.html', context_dict))
         except Game.DoesNotExist:
             return HttpResponse('')
