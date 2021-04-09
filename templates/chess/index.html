@@ -23,10 +23,5 @@
 </div>
 <img src="{% static 'images/chess.jpg' %}" width="500" height="500"/>
 <hr />
-<div>
-	{% if user.is_superuser %}
-		<a href="{% url 'chess:add_tournament' %}">Add a tournament</a>
-	{% endif %}
-</div>
 {% endblock %}
 
