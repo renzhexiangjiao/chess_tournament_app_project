@@ -1,0 +1,22 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/chessboard.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div id="chess-board-container"></div>
+<button id="prev-move">&lt;</button>
+<button id="next-move">&gt;</button>
+<h3>Moves:</h3>
+<ol id="move-list">
+    {% for move in moves %}
+    <li>{{ move }}</li>
+    {% endfor %}
+</ol>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/gamehistory.js' %}"></script>  
+{% endblock %}

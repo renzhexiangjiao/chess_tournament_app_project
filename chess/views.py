@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django.views import View
 from chess import gamerules
 from chess.models import Tournament, Game, Move, AccountPage
 from chess.forms import AccountPageForm, TournamentForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from datetime import timedelta
 from copy import deepcopy
 
 class IndexView(View):
@@ -17,6 +19,11 @@ class PlayView(View):
         try:
             game = Game.objects.get(id=game_id)
             spectate_mode = 'spectate' in request.path.split('/')
+
+            if timezone.now() < game.time:
+                return redirect(reverse('chess:index'))
+            elif timezone.now() > game.time + timedelta(minutes=20) or game.result is not None:
+                return redirect(reverse('chess:gamehistory', kwargs={'game_id':game_id}))
 
             perspective = 0
             if not spectate_mode:
@@ -87,6 +94,38 @@ class MoveUpdateView(View):
         except Game.DoesNotExist:
             return HttpResponse('')
             
+class GameHistoryView(View):
+    def get(self, request, game_id):
+        try:
+            game = Game.objects.get(id=game_id)
+
+            if timezone.now() < game.time:
+                return redirect(reverse('chess:index'))
+            elif game.result is None or timezone.now() < game.time + timedelta(minutes=20):
+                redirect(reverse('chess:play', kwargs={'game_id':game_id}))
+
+            moves = Move.objects.filter(game=game).order_by('move_id')
+
+            context_dict = { 'moves': [move.square_from + move.square_to for move in moves]}
+            return render(request, 'chess/gamehistory.html', context_dict)
+        except Game.DoesNotExist:
+            return redirect(reverse('chess:index'))
+
+class BoardHistoryView(View):
+    def get(self, request, game_id):
+        try:
+            n_moves = int(request.GET['move_index'])
+            game = Game.objects.get(id=game_id)
+            moves = Move.objects.filter(game=game).order_by('move_id')
+
+            board_state = deepcopy(gamerules.starting_board_state)
+            for move in moves[:n_moves]:
+                gamerules.make_move(board_state, move.square_from, move.square_to)
+
+            context_dict = { 'perspective': 0, 'board_state': board_state}
+            return HttpResponse(render_to_string('chess/board.html', context_dict))
+        except Game.DoesNotExist:
+            return HttpResponse('')
         
 def show_tournament_history(request):
     context_dict = {}

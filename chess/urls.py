@@ -10,6 +10,8 @@ urlpatterns = [
     path('play/spectate/<int:game_id>/', views.PlayView.as_view(), name='spectate'),
     path('moveupdate/<int:game_id>/', views.MoveUpdateView.as_view(), name='moveupdate'),
     path('movelist/<int:game_id>/', views.MoveListView.as_view(), name='movelist'),
+    path('game-history/<int:game_id>/', views.GameHistoryView.as_view(), name='gamehistory'),
+    path('board-history/<int:game_id>/', views.BoardHistoryView.as_view(), name='boardhistory'),
     path('tournament-history/', views.show_tournament_history, name='history'),
     path('tournament/<tournament_name>/', 
          views.show_tournament, name='show_tournament'),

@@ -17,7 +17,7 @@
 	{% if games %}
 	<ul>
 		{% for game in games %}
-		<li>{{ game.player_white }} vs {{ game.player_black}} | time: {{ game.time }}</li>
+		<li><a href="{% url 'chess:gamehistory' game.id %}">{{ game.player_white }} vs {{ game.player_black}} | time: {{ game.time }}</a></li>
 		{% endfor %}
 	</ul>
 	{% else %}
