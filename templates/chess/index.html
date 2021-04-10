@@ -10,18 +10,27 @@
 {% endblock %}
 
 {% block body_block %}
-<h1 style="font-size: 50px;">Homepage</h1>
-<div>
+<h1 class="jumbotron-heading">Homepage</h1>
+<div class="container-fluid">
 	<details>
-		<summary>Recommaend Tournaments</summary>
+		<summary>Upcoming tournaments which might interest you:</summary>
 		<ul>
-			<li><a href="{% url 'chess:show_tournament' 'Tournament1' %}">Tournament1</a></li>
-			<br />
-			<li><a href="{% url 'chess:show_tournament' 'Tournament2' %}">Tournament2</a></li>
+			{% for tournament in upcoming_tournaments %}
+			<li><a href="{% url 'chess:calendar' %}?tournament={{ tournament.id }}">{{ tournament.name }}</a></li>
+			{% endfor %}
 		</ul>
 	</details>
 </div>
-<img src="{% static 'images/chess.jpg' %}" width="500" height="500"/>
+<div class="container-fluid">
+	<details>
+		<summary>Recent games:</summary>
+		<ul>
+			{% for game in recent_games %}
+			<li><a href="{% url 'chess:gamehistory' game.id %}">{{ game.player_white }} vs {{ game.player_black }}</a></li>
+			{% endfor %}
+		</ul>
+	</details>
+</div>
 <hr />
 {% endblock %}
 

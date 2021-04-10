@@ -1,5 +1,5 @@
 $(function() {
-  $.get('/chess/update-calendar/', function(data) {
+  $.get(location.href.replace('calendar', 'update-calendar'), function(data) {
     var calendar_setup = {
       themeSystem:'bootstrap3',
       headerToolbar: {
@@ -7,10 +7,10 @@ $(function() {
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
           },
-      initialDate: Date.now(),
+      initialDate: data.time,
       navLinks: true, // can click day/week names to navigate views
       dayMaxEvents: true,
-      events: data}
+      events: data.events}
     
     var calendar = new FullCalendar.Calendar($('#calendar').get(0), calendar_setup);
     calendar.render();

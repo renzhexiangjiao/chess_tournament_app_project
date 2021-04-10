@@ -12,7 +12,11 @@ from copy import deepcopy
 
 class IndexView(View):
     def get(self, request):
-        return render(request, 'chess/index.html')
+        upcoming_tournaments = Tournament.objects.filter(date__gte=timezone.now())
+        recent_games = Game.objects.filter(result__isnull=False).order_by('-time')[:5]
+
+        context_dict = {'upcoming_tournaments':upcoming_tournaments, 'recent_games':recent_games}
+        return render(request, 'chess/index.html', context_dict)
 
 class PlayView(View):
     def get(self, request, game_id):
@@ -192,7 +196,7 @@ def show_tournament_history(request):
     context_dict = {}
     
     try:
-        tournaments = Tournament.objects.all()
+        tournaments = Tournament.objects.filter(winner__isnull=False)
         
         context_dict['tournaments'] = tournaments
     except Tournament.DoesNotExist:
@@ -222,12 +226,20 @@ class CalendarUpdateView(View):
     def get(self, request):
         tournaments = Tournament.objects.all()
 
+        time = timezone.now()    
+        if 'tournament' in request.GET:
+            try:
+                selected_tournament = Tournament.objects.get(id=request.GET['tournament'])
+                time = selected_tournament.date
+            except: 
+                pass
+        
         event_list = []
 
         for tournament in tournaments:
             event_list.append({'title':tournament.name, 'start':tournament.date.strftime('%Y-%m-%dT%H:%M:%S')})
         
-        return JsonResponse(event_list, safe=False)
+        return JsonResponse({'events':event_list, 'time':time})
 
 @login_required
 def create_accountpage(request):
@@ -263,8 +275,8 @@ def add_tournament(request):
     if request.method == 'POST':
         tournament_form = TournamentForm(request.POST)
         if tournament_form.is_valid():
-            tournament_form.save(commit=True)
-            return redirect(reverse('chess:history'))
+            tournament = tournament_form.save(commit=True)
+            return redirect(reverse('chess:calendar')+'?tournament='+str(tournament.id))
         else:
-            print(form.errors)
+            print(tournament_form.errors)
     return render(request, 'chess/add_tournament.html', {'tournament_form': tournament_form})
