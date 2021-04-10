@@ -20,4 +20,6 @@ urlpatterns = [
     path('accountpage/', views.show_accountpage, name='accountpage'),
     path('accountpage/create/', views.create_accountpage, name='create_accountpage'),
     path('add_tournament/', views.add_tournament, name='add_tournament'),
+    path('delete-tournament/', views.DeleteTournamentView.as_view(), name='deletetournament'),
+    path('tournament-signup/', views.TournamentSignupView.as_view(), name='tournamentsignup'),
 ]

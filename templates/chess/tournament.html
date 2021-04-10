@@ -4,7 +4,7 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	{% if category %}
+	{% if tournament %}
 		{{ tournament.name }}
 	{% else %}
 		Unknown Tournament
@@ -23,7 +23,19 @@
 	{% else %}
 	<strong>No games currently in tournament.</strong>
 	{% endif %}
-
+	{% if tournament.winner %}
+	<strong>Winner:</strong> {{ tournament.winner.username }}
+	{% endif %}
+	<h3>Participants:</h3>
+	{% if tournament.participants.all %}
+		<ul>
+		{% for participant in tournament.participants.all %}
+			<li>{{ participant.username }}</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+	None yet.
+	{% endif %}
 	{% else %}
 	The specified tournament does not exist.
 	{% endif %}

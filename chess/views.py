@@ -4,9 +4,11 @@ from django.template.loader import render_to_string
 from django.views import View
 from chess import gamerules
 from chess.models import Tournament, Game, Move, AccountPage
-from chess.forms import AccountPageForm, TournamentForm
+from chess.forms import AccountPageForm, TournamentForm, ChooseTournamentsForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from datetime import timedelta
 from copy import deepcopy
 
@@ -237,7 +239,14 @@ class CalendarUpdateView(View):
         event_list = []
 
         for tournament in tournaments:
-            event_list.append({'title':tournament.name, 'start':tournament.date.strftime('%Y-%m-%dT%H:%M:%S')})
+            event = {'title':tournament.name, 
+                     'start':tournament.date.strftime('%Y-%m-%dT%H:%M:%S'),
+                     'url':reverse('chess:show_tournament', kwargs={'tournament_name':tournament.name})}
+
+            if tournament.participants.filter(id=request.user.id).exists():
+                event['backgroundColor'] = '#0f0'
+
+            event_list.append(event)
         
         return JsonResponse({'events':event_list, 'time':time})
 
@@ -280,3 +289,38 @@ def add_tournament(request):
         else:
             print(tournament_form.errors)
     return render(request, 'chess/add_tournament.html', {'tournament_form': tournament_form})
+
+class DeleteTournamentView(View):
+    @method_decorator(staff_member_required)
+    def get(self, request):
+        form = ChooseTournamentsForm()
+        return render(request, 'chess/delete_tournament.html', {'form': form})
+
+    @method_decorator(staff_member_required)
+    def post(self, request):
+        form = ChooseTournamentsForm(request.POST)
+        if form.is_valid():
+            for tournament in form.cleaned_data.get('tournaments'):
+                print('success')
+                Tournament.objects.get(id=tournament).delete()
+            return redirect(reverse('chess:calendar'))
+        else:
+            print(form.errors)
+        return render(request, 'chess/sign_up_for_tournaments.html', {'form': form})
+
+class TournamentSignupView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        form = ChooseTournamentsForm(user=request.user)
+        return render(request, 'chess/sign_up_for_tournaments.html', {'form': form})
+
+    @method_decorator(login_required)
+    def post(self, request):
+        form = ChooseTournamentsForm(request.POST, user=request.user)
+        if form.is_valid():
+            for tournament in form.cleaned_data.get('tournaments'):
+                Tournament.objects.get(id=tournament).participants.add(request.user)
+            return redirect(reverse('chess:calendar'))
+        else:
+            print(form.errors)
+        return render(request, 'chess/sign_up_for_tournaments.html', {'form': form})

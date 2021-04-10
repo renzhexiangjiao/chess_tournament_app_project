@@ -21,11 +21,11 @@
 			</li>
 			{% if user.is_superuser %}
 			<li class="nav-item">
-				<a href="{% url 'chess:add_tournament' %}" class="nav-link"><i data-feather="trash-2"></i>Cancel tournaments</a>
+				<a href="{% url 'chess:deletetournament' %}" class="nav-link"><i data-feather="trash-2"></i>Cancel tournaments</a>
 			</li>
 			{% endif %}
 			<li class="nav-item">
-				<a href="{% url 'chess:add_tournament' %}" class="nav-link"><i data-feather="user-plus"></i>Sign up for tournaments</a>
+				<a href="{% url 'chess:tournamentsignup' %}" class="nav-link"><i data-feather="user-plus"></i>Sign up for tournaments</a>
 			</li>
 		</ul>
 	</nav>

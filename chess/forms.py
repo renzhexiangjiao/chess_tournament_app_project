@@ -15,3 +15,27 @@ class TournamentForm(forms.ModelForm):
     class Meta:
         model = Tournament
         fields = ('name', 'date',)
+
+class ChooseTournamentsForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        user = None
+        if 'user' in kwargs:
+            user = kwargs.pop('user')
+        super(ChooseTournamentsForm, self).__init__(*args, **kwargs)
+
+        label = "Choose one tournament or more:"
+
+        if user:
+            tournament_choices = zip(Tournament.objects.exclude(participants=user).order_by('id').values_list('id', flat=True), 
+                                     Tournament.objects.exclude(participants=user).order_by('id').values_list('name', flat=True))
+        else:
+            tournament_choices = zip(Tournament.objects.all().order_by('id').values_list('id', flat=True), 
+                                     Tournament.objects.all().order_by('id').values_list('name', flat=True))
+
+        self.fields['tournaments'] = forms.MultipleChoiceField(choices=tournament_choices,
+                                                               label=label,
+                                                               widget=forms.CheckboxSelectMultiple(),
+                                                               required=False)
+    
+    
+

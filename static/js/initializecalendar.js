@@ -10,7 +10,8 @@ $(function() {
       initialDate: data.time,
       navLinks: true, // can click day/week names to navigate views
       dayMaxEvents: true,
-      events: data.events}
+      events: data.events,
+      eventBackgroundColor: 'red'}
     
     var calendar = new FullCalendar.Calendar($('#calendar').get(0), calendar_setup);
     calendar.render();

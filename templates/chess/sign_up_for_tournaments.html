@@ -1,0 +1,21 @@
+{% extends 'chess/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Sign up for tournaments
+{% endblock %}
+
+{% block body_block %}
+
+<strong>Sign up for tournaments here!</strong>
+<br />
+<div>
+	<form method="post" action=".">
+	  
+	  {% csrf_token %}
+	  
+      {{ form.as_p }}
+	  <input type="submit" name="submit" value="Submit" />
+	</form>
+</div>
+{% endblock %}
