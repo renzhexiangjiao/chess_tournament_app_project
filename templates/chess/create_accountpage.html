@@ -2,13 +2,13 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	Createing account page
+	Edit account page
 {% endblock %}
 
 {% block body_block %}
 <h1>{{ user.get_username }}</h1>
 
-<strong>Createing your account page here!</strong>
+<strong>Create your account page here!</strong>
 <br />
 
 <form id="accountpage_form" method="post" action="{% url 'chess:create_accountpage'%}"

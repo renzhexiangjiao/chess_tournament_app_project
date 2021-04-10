@@ -26,6 +26,27 @@ class Game(models.Model):
 
     result = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
     
+    def save(self, *args, **kwargs):
+        if self.result is not None:
+            print('saving game result...')
+            accountpage_white = AccountPage.objects.get_or_create(user=self.player_white)[0]
+            accountpage_black = AccountPage.objects.get_or_create(user=self.player_black)[0]
+
+            if self.result == 1.0: # white won
+                accountpage_white.wonGame += 1
+                accountpage_black.lostGame += 1
+            elif self.result == 0.0: # black won
+                accountpage_white.lostGame += 1
+                accountpage_black.wonGame += 1
+
+            accountpage_white.winRate = accountpage_white.wonGame / (accountpage_white.wonGame + accountpage_white.lostGame)
+            accountpage_black.winRate = accountpage_black.wonGame / (accountpage_black.wonGame + accountpage_black.lostGame)
+
+            accountpage_white.save()
+            accountpage_black.save()
+
+        super(Game, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.player_white.username + ' vs ' + self.player_black.username
 

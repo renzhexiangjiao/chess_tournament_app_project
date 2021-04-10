@@ -231,35 +231,19 @@ class CalendarUpdateView(View):
 
 @login_required
 def create_accountpage(request):
-    filled = False
-    
     if request.method == 'POST':
-        accountpage_form = AccountPageForm(request.POST)
+        accountpage = AccountPage.objects.get_or_create(user=request.user)[0]
+        accountpage_form = AccountPageForm(request.POST, request.FILES, instance=accountpage)
         
         if accountpage_form.is_valid():
-            
-            # Since we need to set the user attribute ourselves,
-            # we set commit=False. This delays saving the model
-            accountpage = accountpage_form.save(commit=False)
-            accountpage.user = request.user
-            
-            if 'picture' in request.FILES:
-                accountpage.picture = request.FILES['picture']
-            
-            accountpage.save()
-            
-            filled = True
+            accountpage_form.save(commit=True)
+            return redirect(reverse('chess:accountpage'))
         else:
             print(accountpage_form.errors)
     else:
         accountpage_form = AccountPageForm()
-    
-    if filled == True:
-        return redirect(reverse('chess:accountpage'))
-    else:
-        return render(request,
-                      'chess/create_accountpage.html',
-                      context = {'accountpage_form': accountpage_form, 'filled': filled})
+   
+    return render(request, 'chess/create_accountpage.html', {'accountpage_form': accountpage_form})
 
 def show_accountpage(request):
     context_dict = {}

@@ -6,17 +6,31 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>{{ user.get_username }}</h1>
-
-<strong>Welcome to your account page!</strong>
-<br />
-<a href="{% url 'chess:create_accountpage' %}">Create account page</a>
-
+<label for="profile_picture"><h1>{{ user.get_username }}</h1></label>
+{% if accountpage.picture %}
+<img name="profile_picture" src="{{ MEDIA_URL }}{{accountpage.picture}} " width="100" height="100" alt="Your profile picture"/>
+{% endif %}
 <div>
-	<p>Status: {{accountpage.status}}</p>
-	<p>Picture: </p>
-	{% if accountpage.picture %}
-		<img src="{{ MEDIA_URL }}{{accountpage.picture}} " alt="Your image."/>
+	{% if accountpage.status %}
+	<h3>Status:</h3><p>{{ accountpage.status }}</p>
 	{% endif %}
+	<h3>Statistics:</h3>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th scope="row">Number of won games:</th>
+				<td>{{ accountpage.wonGame }}</td>
+			</tr>
+			<tr>
+				<th scope="row">Number of lost games:</th>
+				<td>{{ accountpage.lostGame }}</td>
+			</tr>
+			<tr>
+				<th scope="row">Win rate:</th>
+				<td>{{ accountpage.winRate }}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
+<a href="{% url 'chess:create_accountpage' %}">Edit account page</a>
 {% endblock %}
