@@ -31,7 +31,7 @@ starting_board_state = {
               0, 0, 0, 0, 0, 0, 0, 0,
               11, 11, 11, 11, 11, 11, 11, 11,
               5, 9, 7, 3, 1, 7, 9, 5],
-    'turn': 0,                  # 0 - white moves, 1 - black moves
+    'turn': False,              # false - white moves, true - black moves
     'castling': [1, 1, 1, 1],   # possibility of castling 
     'en_passant': None          # square on which en passant is possible
 }
@@ -45,7 +45,7 @@ def legal_moves(board_state):
 
     # select all white / all black pieces
     for pos, piece in enumerate(board_state['board']):
-        if piece % 2 == board_state['turn'] and piece!=0:
+        if piece % 2 == int(board_state['turn']) and piece!=0:
             legal_pieces.append((pos, piece))
 
     valid = lambda r, c: c>=0 and c<=7 and r>=0 and r<=7 # checks if the square is in the boundaries of the chessboard
@@ -206,7 +206,7 @@ def make_move(board_state, sq_from, sq_to):
         board_state['en_passant'] = None
 
     # change turn
-    board_state['turn'] = 1 - board_state['turn']
+    board_state['turn'] = not board_state['turn']
 
     # move piece on the board
     board_state['board'][index_to] = board_state['board'][index_from]

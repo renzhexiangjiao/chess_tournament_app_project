@@ -11,6 +11,19 @@ $(function() {
 
     var turn = false;
 
+    function updateLegalMoves(new_move) {
+        // ask server for legal moves
+        $.get('/chess/movelist/'+game_id+'/', { move: new_move },
+        function(data) {
+            if(data.redirect) {
+                $(location).attr('href', data.redirect);
+            } else {
+                turn = data.turn;
+                legal_moves = data.legal_moves;
+            }
+        });
+    }
+
     function updateBoard() {
         $.get('/chess/moveupdate/'+game_id+'/', function(data) {
             // if the opponent made a move in last 0.5s
@@ -27,32 +40,27 @@ $(function() {
 
                 // update the list
                 $('#move-list').append(`<li>${data}</li>`);
+
+                // ask server for legal moves
+                updateLegalMoves('');
             }
-            // ask server for legal moves
-            $.get('/chess/movelist/'+game_id+'/', { move: '' },
-            function(data) {
-                if(data.redirect) {
-                    $(location).attr('href', data.redirect);
-                } else {
-                    turn = data.turn;
-                    legal_moves = data.legal_moves;
-                }
-            });
         });
     }
 
     // check for board updates every 0.5s
     updateBoard();
+    updateLegalMoves('');
     setInterval(updateBoard, 500);
     
     // set up click listeners
     for(let c = 10; c < 18; c++) { // columns a to h
         for(let r = 1; r < 9; r++) { // rows 1 to 8
-            $('#'+c.toString(36)+r).click(function() {
+            let clicked_square = c.toString(36) + r;
+            $('#'+clicked_square).click(function() {
                 if(turn) {
                     // case 1: player clicked a green circle
-                    if (sq_from && legal_moves.includes(sq_from + c.toString(36) + r)) {
-                        sq_to = c.toString(36) + r
+                    if (sq_from && legal_moves.includes(sq_from + clicked_square)) {
+                        sq_to = clicked_square;
 
                         // update second last and last moves
                         second_last_move = last_move
@@ -64,17 +72,12 @@ $(function() {
 
                         // update the list
                         $('#move-list').append(`<li>${sq_from+sq_to}</li>`);
+                        
+                        // prevent making any other moves before a new list of moves is received from the server
+                        turn = false;
 
                         // ask server for a new list of legal moves
-                        $.get('/chess/movelist/'+game_id+'/', { move: sq_from + sq_to },
-                        function(data) {
-                            if(data.redirect) {
-                                $(location).attr('href', data.redirect);
-                            } else {
-                                turn = data.turn;
-                                legal_moves = data.legal_moves;
-                            }
-                        });
+                        updateLegalMoves(sq_from + sq_to);
 
                         // remove all green circles
                         $('img').remove('.selector');
@@ -87,7 +90,7 @@ $(function() {
                         $('img').remove('.selector');
 
                         sq_to = null;
-                        sq_from = c.toString(36) + r;
+                        sq_from = clicked_square;
 
                         // draw selectors (green circles) on tiles which the selected piece can move to
                         for(let i = 0; i < legal_moves.length; i++) {

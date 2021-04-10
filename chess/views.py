@@ -59,16 +59,16 @@ class PlayLobbyView(View):
     def get(self, request):
         games = Game.objects.filter(time__lte=timezone.now()).filter(result__isnull=True)
         if request.user.is_authenticated:
-            ongoing_games = games.exclude(player_black=request.user).exclude(player_white=request.user).order_by('time')
+            ongoing_games = games.exclude(player_black=request.user).exclude(player_white=request.user)
             games_white = games.filter(player_white=request.user)
             games_black = games.filter(player_black=request.user)
-            playable_games = (games_white | games_black).order_by('time')
+            playable_games = (games_white | games_black)
         else:
-            ongoing_games = games.order_by('time')
+            ongoing_games = games
             playable_games = None
 
         # playable games are the currently held games which the user participates in. ongoing games are all other currently held games.
-        context_dict = {'playable_games': playable_games, 'ongoing_games': ongoing_games }
+        context_dict = {'playable_games': playable_games.order_by('time'), 'ongoing_games': ongoing_games.order_by('time') }
 
         # gamestatus is present if the user has just finished their game. It informs them if they won, lost or drawn the game
         if 'gamestatus' in request.GET:
@@ -93,8 +93,8 @@ class MoveListView(View):
             for move in moves:
                 gamerules.make_move(board_state, move.square_from, move.square_to)
 
-            # board_state['turn'] is 0 when it's white player's turn, 1 otherwise
-            turn = int(board_state['turn']==int(request.user==game.player_black))
+            # board_state['turn'] is false when it's white player's turn, true otherwise
+            turn = board_state['turn']==(request.user==game.player_black)
             
             move_str = request.GET['move']
             if move_str and (move_str in gamerules.legal_moves(board_state)): # double checks if the received move is valid
@@ -107,7 +107,7 @@ class MoveListView(View):
                 # update the board 
                 gamerules.make_move(board_state, move.square_from, move.square_to)
                 # now is the turn of the opponent
-                turn = 0
+                turn = False
 
                 # check if the current position is winning/losing/tied
                 if gamerules.mate_white(board_state):
