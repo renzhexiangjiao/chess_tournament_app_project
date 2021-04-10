@@ -7,13 +7,6 @@
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
 	{% block css %}
 	{% endblock %}
-	<style>	
-		.topbar {border:1px solid #999999; margin:20px; font-weight:bold;}
-		.history {position:absolute; left: 400px;}	
-		.calendar {position:absolute; left: 800px;}
-		.accountpage {position:absolute; left: 1200px;}
-    </style>
-	
     <title>
 		{% block title_block %}
 			Chess Tournament App	
@@ -22,24 +15,42 @@
 </head>
 <body>
     <header>
-        <div>
-            <a href="{% url 'chess:index' %}">Home</a>
-        </div>
-        <div>
-            {% if user.is_authenticated %}
-            Logged in as <strong>{{ user.username }}</strong>. | <a href="{% url 'auth_logout' %}?next={% url 'chess:index' %}">Logout</a> | <a href="{% url 'auth_password_change' %}">Change password</a>
-            {% else %}
-            <a href="{% url 'auth_login' %}">Login</a> | <a href="{% url 'registration_register' %}">Register</a>
-            {% endif %}
-        </div>
-		<div class="topbar">
-			<a href="{% url 'chess:playlobby' %}" class="play">Play</a>
-			<a href="{% url 'chess:history' %}" class="history">Tournament History</a>
-			<a href="{% url 'chess:calendar' %}" class="calendar">Calendar</a>
-			{% if user.is_authenticated %}
-				<a href="{% url 'chess:accountpage' %}" class="accountpage">My account</a>
-			{% endif %}
-		</div>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark p-0">
+			<a class="navbar-brand" href="{% url 'chess:index' %}"><i data-feather="home"></i>Home</a>
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'chess:playlobby' %}">Play</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'chess:history' %}">Tournament History</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'chess:calendar' %}">Calendar</a>
+				</li>
+				{% if user.is_authenticated %}
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'chess:accountpage' %}">My account</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'auth_logout' %}?next={% url 'chess:index' %}">Logout</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'auth_password_change' %}">Change password</a>
+				</li>	 	
+				{% endif %}
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'auth_login' %}">Login</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'registration_register' %}">Register</a>
+				</li>
+			</ul>
+			<div class="navbar-nav">
+				{% if user.is_authenticated %}
+				<a class="nav-link">Logged in as <strong>{{ user.username }}</strong>.</a>
+				{% endif %}
+			</div>
+		</nav>
     </header>
     {% block body_block %}
     {% endblock %}

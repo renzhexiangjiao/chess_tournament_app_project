@@ -71,7 +71,7 @@ class PlayLobbyView(View):
             playable_games = (games_white | games_black)
         else:
             ongoing_games = games
-            playable_games = None
+            playable_games = Game.objects.none()
 
         # playable games are the currently held games which the user participates in. ongoing games are all other currently held games.
         context_dict = {'playable_games': playable_games.order_by('time'), 'ongoing_games': ongoing_games.order_by('time') }
