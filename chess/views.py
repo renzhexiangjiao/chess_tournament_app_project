@@ -218,6 +218,17 @@ def show_tournament(request, tournament_name):
 def show_calendar(request):
     return render(request, 'chess/calendar.html')
 
+class CalendarUpdateView(View):
+    def get(self, request):
+        tournaments = Tournament.objects.all()
+
+        event_list = []
+
+        for tournament in tournaments:
+            event_list.append({'title':tournament.name, 'start':tournament.date.strftime('%Y-%m-%dT%H:%M:%S')})
+        
+        return JsonResponse(event_list, safe=False)
+
 @login_required
 def create_accountpage(request):
     filled = False

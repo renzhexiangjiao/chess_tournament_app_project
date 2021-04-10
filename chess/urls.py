@@ -16,6 +16,7 @@ urlpatterns = [
     path('tournament/<tournament_name>/', 
          views.show_tournament, name='show_tournament'),
     path('calendar/', views.show_calendar, name='calendar'),
+    path('update-calendar/', views.CalendarUpdateView.as_view(), name='updatecalendar'),
     path('accountpage/', views.show_accountpage, name='accountpage'),
     path('accountpage/create/', views.create_accountpage, name='create_accountpage'),
     path('add_tournament/', views.add_tournament, name='add_tournament'),
